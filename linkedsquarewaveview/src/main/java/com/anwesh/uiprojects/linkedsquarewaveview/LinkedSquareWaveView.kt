@@ -9,6 +9,7 @@ import android.content.Context
 import android.view.MotionEvent
 import android.graphics.Paint
 import android.graphics.Canvas
+import android.graphics.Color
 
 val SWV_NODES : Int = 5
 
@@ -78,5 +79,63 @@ class LinkedSquareWaveView (ctx : Context) : View(ctx) {
                 animated = false
             }
         }
+    }
+
+    data class SWNode (var i : Int, val state : SWVState = SWVState()) {
+
+        var next : SWNode? = null
+
+        var prev : SWNode? = null
+
+        fun update(stopcb : (Float) -> Unit) {
+            state.update(stopcb)
+        }
+
+        fun startUpdating(startcb : () -> Unit) {
+            state.startUpdating(startcb)
+        }
+
+        fun getNext(dir : Int, cb : () -> Unit) : SWNode {
+            var curr : SWNode? = prev
+            if (dir == 1) {
+                curr = next
+            }
+            if (curr != null) {
+                return curr 
+            }
+            cb()
+            return this
+        }
+
+        init {
+            addNeighbor()
+        }
+
+        fun addNeighbor() {
+            if (i < SWV_NODES - 1) {
+                next = SWNode(i + 1)
+                next?.prev = this
+            }
+        }
+
+        fun draw(canvas : Canvas, paint : Paint) {
+            prev?.draw(canvas, paint)
+            val w : Float = canvas.width.toFloat()
+            val h : Float = canvas.height.toFloat()
+            val gap : Float = (0.9f * w) / SWV_NODES
+            val index : Int = i % 2
+            val currH : Float = gap * index
+            val hLine : Float = gap * (1 - 2 * index) * state.scales[1]
+            val currX : Float = gap * state.scales[0]
+            paint.color = Color.parseColor("#4CAF50")
+            paint.strokeWidth = Math.min(w, h) / 50
+            paint.strokeCap = Paint.Cap.ROUND
+            canvas.save()
+            canvas.translate(0.05f * w + i * gap, 0.05f * h + currH)
+            canvas.drawLine(0f, 0f, currX, 0f, paint)
+            canvas.drawLine(currX, 0f, currX, hLine, paint)
+            canvas.restore()
+        }
+
     }
 }
