@@ -163,4 +163,32 @@ class LinkedSquareWaveView (ctx : Context) : View(ctx) {
             curr.draw(canvas, paint)
         }
     }
+
+    data class Renderer(var view : LinkedSquareWaveView) {
+
+        val lsw : LinkedSquareWave = LinkedSquareWave(0)
+
+        val animator : SWAnimator = SWAnimator(view)
+
+        fun render(canvas : Canvas, paint : Paint) {
+            canvas.drawColor(Color.parseColor("#BDBDBD"))
+            lsw.draw(canvas, paint)
+            animator.animate {
+                lsw.update {j, scale ->
+                    animator.stop()
+                    when(scale) {
+                        1f -> {
+                            
+                        }
+                    }
+                }
+            }
+        }
+
+        fun handleTap() {
+            lsw.startUpdating {
+                animator.start()
+            }
+        }
+    }
 }
