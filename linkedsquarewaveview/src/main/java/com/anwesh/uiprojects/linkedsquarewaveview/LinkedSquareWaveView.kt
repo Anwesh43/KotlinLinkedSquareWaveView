@@ -87,8 +87,10 @@ class LinkedSquareWaveView (ctx : Context) : View(ctx) {
 
         var prev : SWNode? = null
 
-        fun update(stopcb : (Float) -> Unit) {
-            state.update(stopcb)
+        fun update(stopcb : (Int, Float) -> Unit) {
+            state.update {
+                stopcb(i, it)
+            }
         }
 
         fun startUpdating(startcb : () -> Unit) {
@@ -101,7 +103,7 @@ class LinkedSquareWaveView (ctx : Context) : View(ctx) {
                 curr = next
             }
             if (curr != null) {
-                return curr 
+                return curr
             }
             cb()
             return this
@@ -136,6 +138,29 @@ class LinkedSquareWaveView (ctx : Context) : View(ctx) {
             canvas.drawLine(currX, 0f, currX, hLine, paint)
             canvas.restore()
         }
+    }
 
+    data class LinkedSquareWave(var i : Int) {
+
+        private var curr : SWNode = SWNode(0)
+
+        private var dir : Int = 1
+
+        fun update(stopcb : (Int, Float) -> Unit) {
+            curr.update {j, scale ->
+                curr = curr.getNext(dir) {
+                    dir *= -1
+                }
+                stopcb(j, scale)
+            }
+        }
+
+        fun startUpdating(startcb : () -> Unit) {
+            curr.startUpdating(startcb)
+        }
+
+        fun draw(canvas : Canvas, paint : Paint) {
+            curr.draw(canvas, paint)
+        }
     }
 }
