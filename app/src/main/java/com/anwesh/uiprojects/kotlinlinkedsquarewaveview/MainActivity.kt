@@ -9,7 +9,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val view : LinkedSquareWaveView = LinkedSquareWaveView(this)
+        val view : LinkedSquareWaveView = LinkedSquareWaveView.create(this)
         fullScreen()
     }
 }
