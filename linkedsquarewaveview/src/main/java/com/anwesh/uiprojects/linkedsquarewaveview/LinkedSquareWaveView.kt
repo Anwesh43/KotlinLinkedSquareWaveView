@@ -4,8 +4,10 @@ package com.anwesh.uiprojects.linkedsquarewaveview
  * Created by anweshmishra on 04/07/18.
  */
 
+import android.app.Activity
 import android.view.View
 import android.content.Context
+import android.content.pm.ActivityInfo
 import android.view.MotionEvent
 import android.graphics.Paint
 import android.graphics.Canvas
@@ -191,6 +193,16 @@ class LinkedSquareWaveView (ctx : Context) : View(ctx) {
             lsw.startUpdating {
                 animator.start()
             }
+        }
+    }
+
+    companion object {
+
+        fun create(activity : Activity) : LinkedSquareWaveView {
+            activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+            val view : LinkedSquareWaveView = LinkedSquareWaveView(activity)
+            activity.setContentView(view)
+            return view
         }
     }
 }
