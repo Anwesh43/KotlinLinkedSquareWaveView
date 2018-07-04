@@ -44,7 +44,10 @@ class LinkedSquareWaveView (ctx : Context) : View(ctx) {
                 scales[j] = prevScale + dir
                 j += dir.toInt()
                 if (j == scales.size || j == -1) {
-
+                    j -= dir.toInt()
+                    dir = 0f
+                    prevScale = scales[j]
+                    stopcb(prevScale)
                 }
             }
         }
@@ -137,7 +140,7 @@ class LinkedSquareWaveView (ctx : Context) : View(ctx) {
             paint.strokeWidth = Math.min(w, h) / 50
             paint.strokeCap = Paint.Cap.ROUND
             canvas.save()
-            canvas.translate(0.05f * w + i * gap, 0.05f * h + currH)
+            canvas.translate(0.05f * w + i * gap, h/2 - gap/2 + currH)
             canvas.drawLine(0f, 0f, currX, 0f, paint)
             canvas.drawLine(currX, 0f, currX, hLine, paint)
             canvas.restore()
